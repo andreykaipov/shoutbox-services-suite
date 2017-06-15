@@ -1,14 +1,36 @@
 {
   "name": "shoutbox-services-suite",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
+  "repository": "https://github.com/andreykaipov/shoutbox-services-suite.git",
+  "author": "Andrey Kaipov <akaip002@fiu.edu>",
+  "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r ts-node/register ./services/**/*.spec.ts",
+    "dev:poller": "npm run --prefix ./services/processor/ dev",
+    "dev:processor": "npm run --prefix ./services/processor/ dev",
+    "dev:poll+process": "concurrently \"npm run dev:poller\" \"npm run dev:processor\""
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "amqplib": "^0.5.1"
+    "amqplib": "^0.5.1",
+    "cheerio": "^1.0.0-rc.1",
+    "dotenv": "^4.0.0",
+    "fast-ordered-set": "^1.0.3",
+    "request": "^2.81.0",
+    "winston": "^2.3.1"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.5.2",
+    "@types/chai": "^4.0.0",
+    "@types/cheerio": "^0.22.1",
+    "@types/mocha": "^2.2.41",
+    "@types/request": "0.0.43",
+    "@types/winston": "^2.3.3",
+    "chai": "^4.0.2",
+    "concurrently": "^3.4.0",
+    "mocha": "^3.4.2",
+    "nodemon": "^1.11.0",
+    "ts-node": "^3.0.6",
+    "typescript": "^2.3.4"
   }
 }
