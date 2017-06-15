@@ -16,7 +16,7 @@ export function processRawShout(shoutHtml: string) {
   const contentStartIndex = findContentStartIndex(childNodes)
 
   let shoutContent = childNodes[contentStartIndex].nodeValue.slice(2) // slice off the ': '
-  let accessibleContent = shoutContent
+  const accessibleContent = shoutContent
 
   childNodes.slice(contentStartIndex + 1).forEach(node => {
     shoutContent += processNode(node)

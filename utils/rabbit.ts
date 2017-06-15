@@ -2,25 +2,24 @@ import config from './config'
 const logger = config.Logger('RABBIT-UTILS')
 
 import * as amqp from 'amqplib'
-import * as Bluebird from 'bluebird';
-
+import * as Bluebird from 'bluebird'
 
 // function channel() {
 //   return connect()
 //     .then(connection => connection.createChannel())
 // }
 
-const rawShoutMessagesX = 'raw.shout.messages';
-const consumerOfRaw = 'shout.processor';
+const rawShoutMessagesX = 'raw.shout.messages'
+const consumerOfRaw = 'shout.processor'
 
 const rabbit = config.RABBIT
-
 
 export async function rabbitChannel() {
   const connection = await amqp.connect(process.env.SSS_RABBIT_CS)
   return await connection.createChannel()
 }
 
+/*
 function setupRabbit() {
 
   amqp.connect(process.env.SSS_RABBIT_CS)
@@ -50,9 +49,11 @@ function setupRabbit() {
     })
     .catch(err => {
       logger.error('Something went wrong when setting up the exchanges and queues in Rabbit', err)
-    });
+    })
 
 }
+*/
+
 // .then(ch => {
 //   Promise.all([
 //     ch.assertExchange(rabbit.POLLER.OUTBOUND_EXCHANGE, 'topic', { durable: true })

@@ -6,7 +6,7 @@ export default function Logger(prefix: string, logFile: boolean | string = true)
     [${prefix}] ${options.level.toUpperCase()} ${options.timestamp()} ${options.message ? options.message : ''}\
     ${options.meta && Object.keys(options.meta).length ? `\nmeta: ${JSON.stringify(options.meta)}` : ''}\
   `.trim()
-  
+
   const transports: any = [
     new winston.transports.Console({
       timestamp: () => new Date().toISOString(),
@@ -22,10 +22,9 @@ export default function Logger(prefix: string, logFile: boolean | string = true)
       })
     )
   }
-  
+
   return new winston.Logger({
     transports: transports
   })
-  
-}
 
+}

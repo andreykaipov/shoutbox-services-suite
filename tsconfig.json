@@ -20,7 +20,6 @@
     "./services/**/*.ts"
   ],
   "exclude": [
-    "./**/node_modules/*",
-    "./**/*.spec.ts"
+    "./**/node_modules/*"
   ]
 }

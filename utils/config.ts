@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv'
-import Logger from './logger';
+import Logger from './logger'
 
 dotenv.config({ path: './env' })
 

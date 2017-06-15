@@ -1,22 +1,22 @@
 import config from '../../utils/config'
 const logger = config.Logger('SHOUTS_POLLER')
 
-import { Observable, Observer } from 'rxjs/Rx'
-import * as request from 'request'
 import * as OrderedSet from 'fast-ordered-set'
+import * as request from 'request'
+import { Observable, Observer } from 'rxjs/Rx'
 
 /**
  * TTG's shoutbox is implemented using HTTP long polling, so we will have to long poll too.
  * However, the shoutbox endpoint TTG polls includes a `run` request paramter of 1, whose response
  * is any shouts within the last ~2000 milliseconds (?). This is problematic at times because if
  * the client's request hangs for any reason past the allotted time, they will miss the past shouts!
- * 
+ *
  * To not miss any shouts, we can specify a `run` parameter of 0, returning the most recent 25 shouts (+ some junk).
  * If we poll this endpoint, we have to filter out any shouts we've already seen before.
  * We do this by keeping track of the past 100 shouts via a sorted set. Why 100 if can only poll 25 at a time?
  * Good question, but I'm not too sure! I tried 50 but even then I was getting duplicates!
  * Probably related to when staff deletes shouts or something, but I can't be bothered to look into it further!
- * */
+ */
 
 const shoutsLoad = (options = {}) => ({
   url: config.POLLER.REQUEST_URL,
@@ -79,14 +79,14 @@ function pollShoutMessages(): Observable<string> {
 function isNewShout(shoutHtml: string) {
   const shoutId = Number( shoutHtml.match(/id="shout_([^"]+)"/).pop() )
   if (lastHundoShouts.has(shoutId)) {
-    return false;
+    return false
   } else {
     lastHundoShouts.add(shoutId)
     if (lastHundoShouts.size > maxShouts) {
-      const firstVal = lastHundoShouts.values[0];
+      const firstVal = lastHundoShouts.values[0]
       lastHundoShouts.delete(firstVal)
     }
-    return true;
+    return true
   }
 }
 

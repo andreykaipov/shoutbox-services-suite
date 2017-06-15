@@ -1,6 +1,6 @@
-import 'mocha'
+// tslint:disable:max-line-length
 import { expect } from 'chai'
-
+import 'mocha'
 import { processRawShout } from './shouts-processor'
 
 const rawShoutHtmls = {
@@ -13,10 +13,10 @@ const rawShoutHtmls = {
               <span class=\"bold\" style=\"color:#FF69B4;\">
                 tortuga
               <\/span>
-            <\/a>: 
+            <\/a>:
             <span style=\"color:#008000;\"> Hello world <\/span>
           <\/div>`,
-  color1: "<div id=\"shout_1958472\" data-shout-time=\"1497406003\" class=\"messagewrapper shout row1 numshouts new\"><span class=\"shout-stamp mr light\">[<time datetime=\"2017-06-13T22:06:43-04:00\" title=\"10:06:43\">10:06:43<\/time>] <\/span><span class=\"fa fa-at fa-14px clickable mr at-shout pause-shout\" title=\"@\" data-at-uname=\"Funsta\"><\/span>  <a class=\"nav user-avatar pause-shout\" href=\"#\" title=\"View Mini Profile\" data-uname=\"Funsta\" data-uid=\"1686818\"><span class=\"bold\" style=\"color:#FF69B4;\">Funsta<\/span><\/a>: <span style=\"color:#008000;\"> Takeyour time make jt perfect,youll be proud of it after <\/span><\/div>"
+  color1: '<div id="shout_1958472" data-shout-time="1497406003" class="messagewrapper shout row1 numshouts new"><span class="shout-stamp mr light">[<time datetime="2017-06-13T22:06:43-04:00" title="10:06:43">10:06:43<\/time>] <\/span><span class="fa fa-at fa-14px clickable mr at-shout pause-shout" title="@" data-at-uname="Funsta"><\/span>  <a class="nav user-avatar pause-shout" href="#" title="View Mini Profile" data-uname="Funsta" data-uid="1686818"><span class="bold" style="color:#FF69B4;">Funsta<\/span><\/a>: <span style="color:#008000;"> Takeyour time make jt perfect,youll be proud of it after <\/span><\/div>'
 }
 
 describe('shout-processor', () => {
