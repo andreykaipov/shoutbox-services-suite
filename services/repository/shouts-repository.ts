@@ -1,5 +1,5 @@
 import config from '../../utils/config'
-const logger = config.Logger('SHOUTS_REPOSITORY')
+const log = config.Logger('SHOUTS_REPOSITORY')
 
 import * as mongojs from 'mongojs'
 import { ProcessedShout } from '../processor/shouts-processor'
@@ -25,6 +25,12 @@ async function persistShout(shout: ProcessedShout) {
     author_name: shout.authorName,
     author_color: shout.authorColor,
     content: shout.content
+  }, (err, doc) => {
+    if (err != null) {
+      log.warn('Error while persisting shout', err.errmsg)
+    } else {
+      log.verbose('Persisted shout', shout.id)
+    }
   })
 
   trackUser(shout)

@@ -1,7 +1,7 @@
 import * as $ from 'cheerio'
 import config from '../../utils/config'
 
-const logger = config.Logger('SHOUTS_PROCESSOR')
+const log = config.Logger('SHOUTS_PROCESSOR')
 
 export interface ProcessedShout {
   id: number,
@@ -26,6 +26,8 @@ export function processRawShout(shoutHtml: string): ProcessedShout {
   const userColor = userStyle ? userStyle.match(/color:(.+);/).pop() : null
 
   const shoutContent = getShoutContent(root[0].childNodes)
+
+  log.verbose('Processed shout', shoutId)
 
   return {
     id: shoutId,
@@ -97,7 +99,7 @@ function processNode(node: CheerioElement) {
         case 'marquee':
           return processed
         default:
-          logger.warn('Encountered an unrecognizable tag while parsing shout HTML', node)
+          log.warn('Encountered an unrecognizable tag while parsing shout HTML', node)
           return '[unrecognizable-node-tag]'
       }
 
@@ -108,7 +110,7 @@ function processNode(node: CheerioElement) {
       return ` <js>${processed}</js> `
 
     default:
-      logger.warn('Encountered an unrecognizable node type while parsing shout HTML', node)
+      log.warn('Encountered an unrecognizable node type while parsing shout HTML', node)
       return '[unrecognizable-node-type]'
 
   }

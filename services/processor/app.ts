@@ -1,11 +1,11 @@
 import config from '../../utils/config'
-const logger = config.Logger('SHOUTS_PROCESSOR_APP')
+const log = config.Logger('PROCESSOR_APP')
 
 import * as amqp from 'amqplib'
 import { Rabbit } from '../../utils/rabbit'
 import { processRawShout } from './shouts-processor'
 
-logger.info('Started processor service...')
+log.info('Started processor service...')
 
 ~async function startProcessing() {
 
@@ -21,7 +21,6 @@ logger.info('Started processor service...')
       'processed.shout',
       buffer
     )
-
     channel.ack(msg)
 
   }, { noAck: false })

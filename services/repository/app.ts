@@ -1,12 +1,12 @@
 import config from '../../utils/config'
-const logger = config.Logger('SHOUTS_REPOSITORY_APP')
+const log = config.Logger('REPOSITORY_APP')
 
 import * as amqp from 'amqplib'
 import { Rabbit } from '../../utils/rabbit'
 import { ProcessedShout } from '../processor/shouts-processor'
 import { initMongo } from './shouts-repository'
 
-logger.info('Started repository service...')
+log.info('Started repository service...')
 
 ~async function startPersisting() {
 

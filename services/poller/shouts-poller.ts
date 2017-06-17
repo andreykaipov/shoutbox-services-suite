@@ -1,5 +1,5 @@
 import config from '../../utils/config'
-const logger = config.Logger('SHOUTS_POLLER')
+const log = config.Logger('SHOUTS_POLLER')
 
 import * as OrderedSet from 'fast-ordered-set'
 import * as request from 'request'
@@ -50,7 +50,7 @@ function getRecentShoutItems(): Observable<any[]> {
   })
   .retryWhen(errors => {
     return errors.delayWhen(e => {
-      logger.error('Error while getting our recent shouts items!', e)
+      log.error('Error while getting our recent shouts items!', e)
       return Observable.timer(2 * config.POLLER.TIMEOUT).first()
     })
   })
@@ -80,6 +80,7 @@ function isNewShout(shoutHtml: string) {
   if (lastHundoShouts.has(shoutId)) {
     return false
   } else {
+    log.verbose('Polled new shout!', shoutHtml)
     lastHundoShouts.add(shoutId)
     if (lastHundoShouts.size > maxShouts) {
       const firstVal = lastHundoShouts.values[0]

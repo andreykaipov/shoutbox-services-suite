@@ -1,11 +1,11 @@
 import config from '../../utils/config'
-const logger = config.Logger('SHOUTS_POLLER_APP')
+const log = config.Logger('POLLER_APP')
 
 import * as amqp from 'amqplib'
 import { Rabbit } from '../../utils/rabbit'
 import { shoutMessagesPoller } from './shouts-poller'
 
-logger.info('Started poller service...')
+log.info('Started poller service...')
 
 const rawShouts = shoutMessagesPoller()
 

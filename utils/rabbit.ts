@@ -1,5 +1,5 @@
 import config from './config'
-const logger = config.Logger('RABBIT-UTILS')
+const log = config.Logger('RABBIT_UTILS')
 
 import * as amqp from 'amqplib'
 import * as Bluebird from 'bluebird'
@@ -58,7 +58,7 @@ async function setupRabbitTopology() {
   await channel.bindQueue(rabbit.API.INBOUND_QUEUE, rabbit.PROCESSOR.OUTBOUND_EXCHANGE, '#')
 
   await Rabbit.close()
-  logger.info('Asserted RabbitMQ topology succesfully!')
+  log.info('Asserted RabbitMQ topology succesfully!')
 
 }
 

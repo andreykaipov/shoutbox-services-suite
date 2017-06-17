@@ -1,4 +1,9 @@
 import * as winston from 'winston'
+import * as fs from 'fs'
+
+if (!fs.existsSync('./logs')) {
+  fs.mkdirSync('./logs');
+}
 
 export default function Logger(prefix: string, logFile: boolean | string = true) {
 
@@ -18,7 +23,8 @@ export default function Logger(prefix: string, logFile: boolean | string = true)
     logFile = typeof logFile === 'string' ? logFile : `${prefix.toLowerCase()}.log`
     transports.push(
       new winston.transports.File({
-        filename: `./logs/${logFile}`
+        filename: `./logs/${logFile}`,
+        level: 'verbose'
       })
     )
   }

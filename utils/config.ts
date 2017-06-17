@@ -47,7 +47,6 @@ const RABBIT_CONFIG = {
 /* Our files should instantiate a logger via this export,
  * in order to trigger Typescript's module resolution to evaluate the above config. */
 export default {
-  env: process.env,
   Logger: Logger,
   POLLER: POLLER_CONFIG,
   RABBIT: RABBIT_CONFIG
