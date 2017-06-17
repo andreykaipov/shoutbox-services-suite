@@ -24,7 +24,6 @@ const shoutsLoad = (options = {}) => ({
   headers: config.POLLER.HEADERS
 })
 
-const pollingInterval: number = 5000
 const maxShouts = 100
 const lastHundoShouts: any = new OrderedSet()
 
@@ -52,7 +51,7 @@ function getRecentShoutItems(): Observable<any[]> {
   .retryWhen(errors => {
     return errors.delayWhen(e => {
       logger.error('Error while getting our recent shouts items!', e)
-      return Observable.timer(2 * pollingInterval).first()
+      return Observable.timer(2 * config.POLLER.TIMEOUT).first()
     })
   })
   .retry(5)
@@ -62,7 +61,7 @@ function getRecentShoutItems(): Observable<any[]> {
 /* Returns an Observable emitting the recent shout items continuously (this time one-by-one). */
 function pollRecentShoutItems(): Observable<any> {
   return Observable
-    .timer(0, pollingInterval)
+    .timer(0, config.POLLER.TIMEOUT)
     .exhaustMap(time => getRecentShoutItems())
     .flatMap(items => items)
 }
@@ -91,4 +90,4 @@ function isNewShout(shoutHtml: string) {
 }
 
 /* Shout messages are just a shouts HTML. */
-export const shoutMessages = pollShoutMessages
+export const shoutMessagesPoller = pollShoutMessages
