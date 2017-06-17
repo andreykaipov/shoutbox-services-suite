@@ -1,42 +1,72 @@
 import * as $ from 'cheerio'
+import config from '../../utils/config'
 
-export function processRawShout(shoutHtml: string) {
+const logger = config.Logger('SHOUTS_PROCESSOR')
 
-  const root = $(shoutHtml)
+export interface ProcessedShout {
+  id: number,
+  timestamp: Date,
+  authorId: number,
+  authorName: string,
+  authorColor: string,
+  content: string
+}
+
+export function processRawShout(shoutHtml: string): ProcessedShout {
+
+  const root = $(shoutHtml.trim())
 
   const shoutId = Number(root.attr('id').split('shout_').pop())
-  const unixTimestamp = root.attr('data-shout-time')
+  const unixTimestamp = Number(root.attr('data-shout-time'))
 
   const userLink = root.children('.user-avatar')
-  const userId = Number(userLink.attr('data-uid'))
-  const userName = userLink.attr('data-uname')
+  const userId = Number(userLink.attr('data-uid')) || null
+  const userName = userLink.attr('data-uname') || null
   const userStyle = userLink.children('span').attr('style')
+  const userColor = userStyle ? userStyle.match(/color:(.+);/).pop() : null
 
-  const childNodes = [...root[0].childNodes]
-  const contentStartIndex = findContentStartIndex(childNodes)
-
-  let shoutContent = childNodes[contentStartIndex].nodeValue.slice(2) // slice off the ': '
-  const accessibleContent = shoutContent
-
-  childNodes.slice(contentStartIndex + 1).forEach(node => {
-    shoutContent += processNode(node)
-  })
+  const shoutContent = getShoutContent(root[0].childNodes)
 
   return {
-    shoutId: shoutId,
+    id: shoutId,
+    timestamp: new Date(unixTimestamp * 1000), // to milliseconds
     authorId: userId,
     authorName: userName,
-    content: shoutContent.trim()
-  }
+    authorColor: userColor,
+    content: shoutContent
+  } as ProcessedShout
 
 }
 
 /* Finds the index of the node that starts the text content.
- * Just look for the node after the username */
-function findContentStartIndex(childNodes): number {
-  return childNodes.findIndex(node => node.attribs && node.attribs['data-uid']) + 1
+ * Just look for the node after the username. */
+function findContentStartIndex(htmlNodes): number {
+  return htmlNodes.findIndex(node => node.attribs && node.attribs['data-uid']) + 1
 }
 
+function getShoutContent(htmlNodes: CheerioElement[]) {
+
+  const contentStartIndex = findContentStartIndex(htmlNodes)
+  const contentNodes = htmlNodes.slice(contentStartIndex)
+  contentNodes[0].nodeValue = contentNodes[0].nodeValue.slice(2) // slice off the ': '
+  return contentNodes.map(processNode).join('').trim()
+
+}
+
+function tokenize(content: string) {
+
+  const tokens = [] as string[]
+  const noScriptContent = content.replace(/<js>.+?<\/js>/g, match => {
+    tokens.push(match)
+    return ''
+  })
+  const remaining = noScriptContent.split(/\s+/g).map(word => word.toLowerCase())
+  tokens.push( ...remaining )
+  return tokens
+
+}
+
+/* Resurse through each of a node's children, choosing the processed data appropriately. */
 function processNode(node: CheerioElement) {
 
   let processed: string = ''
@@ -57,26 +87,29 @@ function processNode(node: CheerioElement) {
       const attribs = node.attribs
       switch (tag) {
         case 'a':
-          return attribs.href || attribs.title || 'BAD_A_TAG'
+          return attribs.href || attribs.title || '[awful-anchor]'
         case 'img':
-          return attribs.title || `src=${attribs.src}`
+          return attribs.title || attribs.src || '[awful-img]'
         case 'span':
           return processed || attribs.title || ':unrecognized:'
         case 'p':
           return processed
+        case 'marquee':
+          return processed
         default:
-          return 'unrecognizable tag!'
+          logger.warn('Encountered an unrecognizable tag while parsing shout HTML', node)
+          return '[unrecognizable-node-tag]'
       }
 
     case 'comment':
-      // we don't really care
       return ''
 
     case 'script':
-      return `script node! -- ${node}`
+      return ` <js>${processed}</js> `
 
     default:
-      return 'unrecognizable node!'
+      logger.warn('Encountered an unrecognizable node type while parsing shout HTML', node)
+      return '[unrecognizable-node-type]'
 
   }
 
