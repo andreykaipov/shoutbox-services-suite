@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 import Logger from './logger'
 
-dotenv.config({ path: './env' })
+dotenv.config()
 
 const POLLER_CONFIG = {
   HEADERS: {
@@ -21,7 +21,8 @@ const POLLER_CONFIG = {
     file: 'ajax_shout',
     op: 'json_load',
     ...options
-  })
+  }),
+  TIMEOUT: 5000
 }
 
 const RABBIT_CONFIG = {
