@@ -11,6 +11,7 @@ log.info('Started processor service...')
 
   const channel = await Rabbit.getChannel()
 
+  channel.prefetch(5)
   const consumer = channel.consume(config.RABBIT.PROCESSOR.INBOUND_QUEUE, msg => {
 
     const rawShout = msg.content.toString()

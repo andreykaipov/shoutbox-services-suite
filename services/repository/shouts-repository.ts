@@ -63,11 +63,17 @@ async function trackUser(shout: ProcessedShout) {
         name: userDocument.current_name,
         name_first_seen: userDocument.name_first_seen
       })
-      this.users.update({ _id: userId }, {
+      users.update({ _id: userId }, {
         _id: userId,
         current_name: userName,
         name_first_seen: timestamp,
         past_names: userDocument.past_names
+      }, (err, doc) => {
+        if (err != null) {
+          log.warn('Error while persisting user', err.errmsg)
+        } else {
+          log.verbose(`Persisted user with new name. User ${userId} is now ${userName}.`)
+        }
       })
     }
 

@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dist/out-tsc",
+    "outDir": "./dist/",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -17,7 +17,8 @@
     ]
   },
   "include": [
-    "./services/**/*.ts"
+    "./services/**/*.ts",
+    "./services/**/*.spec.ts"
   ],
   "exclude": [
     "./**/node_modules/*"

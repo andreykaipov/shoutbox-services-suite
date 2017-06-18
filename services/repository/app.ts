@@ -13,6 +13,7 @@ log.info('Started repository service...')
   const channel = await Rabbit.getChannel()
   const mongo = await initMongo()
 
+  channel.prefetch(5)
   const consumer = channel.consume(config.RABBIT.REPOSITORY.INBOUND_QUEUE, msg => {
 
     const payload = msg.content.toString()

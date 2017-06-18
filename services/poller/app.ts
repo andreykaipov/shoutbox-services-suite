@@ -12,6 +12,7 @@ const rawShouts = shoutMessagesPoller()
 ~async function startPolling() {
 
   const channel = await Rabbit.getChannel()
+  channel.prefetch(5)
 
   const subscription = rawShouts.subscribe(shoutHtml => {
     channel.publish(

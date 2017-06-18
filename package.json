@@ -7,15 +7,27 @@
   "license": "MIT",
   "scripts": {
     "test": "mocha -r ts-node/register ./services/**/*.spec.ts",
-    "dev:poller": "npm run --prefix ./services/processor/ dev",
-    "dev:processor": "npm run --prefix ./services/processor/ dev",
-    "dev:poll+process": "concurrently \"npm run dev:poller\" \"npm run dev:processor\""
+    "dev:poller": "nodemon -e ts -w ./services/poller/ -x ts-node ./services/poller/app.ts",
+    "dev:processor": "nodemon -e ts -w ./services/processor/ -x ts-node ./services/processor/app.ts",
+    "dev:repository": "nodemon -e ts -w ./services/repository/ -x ts-node ./services/repository/app.ts",
+    "dev:ppr": "concurrently \"npm run dev:poller\" \"npm run dev:processor\" \"npm run dev:repository\"",
+    "prod:poller": "forever start -m 5 --uid \"sss-poller\" ./dist/services/poller/app.js",
+    "prod:processor": "forever start -m --uid \"sss-processor\" ./dist/services/processor/app.js",
+    "prod:repository": "forever start -m 5 --uid \"sss-repository\" ./dist/services/repository/app.js",
+    "prod:ppr": "npm run prod:poller && npm run prod:processor && npm run prod:repository",
+    "clean": "rm -rf ./node_modules/ ./logs ./dist",
+    "build": "rm -rf ./dist/ && tsc -p tsconfig.json",
+    "setup": "npm run clean && npm install && npm run build",
+    "setup:prod": "npm run clean && npm install --only=prod && npm run build",
+    "start": "npm run stop && npm run prod:ppr",
+    "stop": "forever stopall"
   },
   "dependencies": {
     "amqplib": "^0.5.1",
     "cheerio": "^1.0.0-rc.1",
     "dotenv": "^4.0.0",
     "fast-ordered-set": "^1.0.3",
+    "mongojs": "^2.4.0",
     "request": "^2.81.0",
     "rxjs": "^6.0.0-alpha.0",
     "winston": "^2.3.1"
@@ -29,6 +41,7 @@
     "@types/winston": "^2.3.3",
     "chai": "^4.0.2",
     "concurrently": "^3.4.0",
+    "forever": "^0.15.3",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
     "ts-node": "^3.0.6",
