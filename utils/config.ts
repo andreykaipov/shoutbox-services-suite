@@ -44,10 +44,16 @@ const RABBIT_CONFIG = {
   }
 }
 
+const PERSISTOR_CONFIG = {
+  SHOUTS_COLLECTION: 'shouts_v2',
+  USERS_COLLECTION: 'users_v2'
+}
+
 /* Our files should instantiate a logger via this export,
  * in order to trigger Typescript's module resolution to evaluate the above config. */
 export default {
   Logger: Logger,
   POLLER: POLLER_CONFIG,
-  RABBIT: RABBIT_CONFIG
+  RABBIT: RABBIT_CONFIG,
+  PERSITOR: PERSISTOR_CONFIG
 }

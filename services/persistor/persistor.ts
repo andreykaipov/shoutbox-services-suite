@@ -17,8 +17,8 @@ export interface MongoShout {
 export class Persistor {
 
   constructor(
-    private shouts = Mongo.getCollection('shouts'),
-    private users = Mongo.getCollection('users')
+    private shouts = Mongo.getCollection(config.PERSITOR.SHOUTS_COLLECTION),
+    private users = Mongo.getCollection(config.PERSITOR.USERS_COLLECTION)
   ) { }
 
   async saveShout(shout: ProcessedShout) {
