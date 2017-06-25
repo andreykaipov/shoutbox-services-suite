@@ -17,6 +17,7 @@
     "object-literal-shorthand": false,
     "member-access": false,
     "member-ordering": [ false ],
-    "no-console": [ true ]
+    "no-console": [ true ],
+    "no-namespace": false
   }
 }
