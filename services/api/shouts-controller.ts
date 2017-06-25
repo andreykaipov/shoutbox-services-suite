@@ -26,6 +26,7 @@ export class ShoutsController {
 
     const author_id = req.query.author_id
     const author_name = req.query.author_name
+    const author_color = req.query.author_color
     const content = req.query.content
     const since = req.query.since
     const until = req.query.until
@@ -33,6 +34,7 @@ export class ShoutsController {
     const matchQuery: any = {}
     if (author_id) { matchQuery.author_id = author_id }
     if (author_name) { matchQuery.author_name = author_name }
+    if (author_color) { matchQuery.author_color = author_color }
     if (content) { matchQuery.content = new RegExp(content) }
     if (since || until) {
       matchQuery.timestamp = {}
@@ -51,7 +53,7 @@ export class ShoutsController {
     const limit = Number(req.query.limit) || 100
     const offset = Number(req.query.offset) || 0
 
-    const meta = { author_id, author_name, content, since, until, sort, limit, offset }
+    const meta = { author_id, author_name, author_color, content, since, until, sort, limit, offset }
 
     try {
       const items = await this.shouts.aggregate([
