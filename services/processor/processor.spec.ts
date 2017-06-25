@@ -1,18 +1,18 @@
 // tslint:disable:max-line-length
 import { expect } from 'chai'
 import 'mocha'
-import { ProcessedShout, processRawShout } from './shouts-processor'
+import { ProcessedShout, processRawShout } from './processor'
 
 const rawShoutHtmlTemplate = (shoutContent: string) => `
   <div id="shout_13371337" data-shout-time="1497556800" class="messagewrapper shout row1 numshouts">
     <span class="shout-stamp mr light">
       [<time datetime="2017-06-15T20:00:00-04:00" title="08:00:00">08:00:00</time>]
     </span>
-    <span class="fa fa-at fa-14px clickable mr at-shout pause-shout" title="@" data-at-uname="tortuga">
+    <span class="fa fa-at fa-14px clickable mr at-shout pause-shout" title="@" data-at-uname="qu1cksc0p3r">
     </span>
-    <a class="nav user-avatar pause-shout" href="#" title="View Mini Profile" data-uname="tortuga" data-uid="1337">
+    <a class="nav user-avatar pause-shout" href="#" title="View Mini Profile" data-uname="qu1cksc0p3r" data-uid="1337">
       <span class="bold" style="color:#FF69B4;">
-        tortuga
+        qu1cksc0p3r
       </span>
     </a>: ${shoutContent}</div>
 `
@@ -68,10 +68,10 @@ const rawShoutHtmls = {
     <span class="shout-stamp mr light">
       [<time datetime="2017-06-15T20:00:00-04:00" title="08:00:00">08:00:00</time>]
     </span>
-    <span class="fa fa-at fa-14px clickable mr at-shout pause-shout" title="@" data-at-uname="tortuga">
+    <span class="fa fa-at fa-14px clickable mr at-shout pause-shout" title="@" data-at-uname="qu1cksc0p3r">
     </span>
-    <a class="nav user-avatar pause-shout" href="#" title="View Mini Profile" data-uname="tortuga" data-uid="1337">
-      tortuga
+    <a class="nav user-avatar pause-shout" href="#" title="View Mini Profile" data-uname="qu1cksc0p3r" data-uid="1337">
+      qu1cksc0p3r
     </a>: Hello world</div>
   `,
   repFairy: `
@@ -102,7 +102,7 @@ const rawShoutHtmls = {
 function checkShoutPreContent(processedShout: ProcessedShout) {
   expect(processedShout.id).to.equal(13371337)
   expect(processedShout.authorId).to.equal(1337)
-  expect(processedShout.authorName).to.equal('tortuga')
+  expect(processedShout.authorName).to.equal('qu1cksc0p3r')
   expect(processedShout.authorColor).to.equal('#FF69B4')
 }
 
@@ -204,7 +204,7 @@ describe('shout-processor', () => {
       const processed = processRawShout(rawShoutHtmls.nonGoldUser)
       expect(processed.id).to.equal(13371337)
       expect(processed.authorId).to.equal(1337)
-      expect(processed.authorName).to.equal('tortuga')
+      expect(processed.authorName).to.equal('qu1cksc0p3r')
       expect(processed.authorColor).to.equal(null)
       expect(processed.content).to.equal(`Hello world`)
     })

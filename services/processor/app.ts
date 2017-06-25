@@ -3,21 +3,21 @@ const log = config.Logger('PROCESSOR_APP')
 
 import * as amqp from 'amqplib'
 import { Rabbit } from '../../utils/rabbit'
-import { processRawShout } from './shouts-processor'
+import { processRawShout } from './processor'
 
 log.info('Started processor service...')
 
 ~async function startProcessing() {
 
-  const channel = await Rabbit.getChannel()
+  await Rabbit.connect(process.env.SSS_RABBIT_CS)
+  const channel = await Rabbit.createChannel()
 
-  channel.prefetch(5)
-  const consumer = channel.consume(config.RABBIT.PROCESSOR.INBOUND_QUEUE, msg => {
+  const consumer = channel.consume(config.RABBIT.PROCESSOR.INBOUND_QUEUE, async msg => {
 
     const rawShout = msg.content.toString()
     const processedShout = processRawShout(rawShout)
     const buffer = new Buffer(JSON.stringify(processedShout))
-    channel.publish(
+    await channel.publish(
       config.RABBIT.PROCESSOR.OUTBOUND_EXCHANGE,
       'processed.shout',
       buffer

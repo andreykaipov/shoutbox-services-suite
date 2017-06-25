@@ -3,7 +3,7 @@ const log = config.Logger('POLLER_APP')
 
 import * as amqp from 'amqplib'
 import { Rabbit } from '../../utils/rabbit'
-import { shoutMessagesPoller } from './shouts-poller'
+import { shoutMessagesPoller } from './poller'
 
 log.info('Started poller service...')
 
@@ -11,8 +11,8 @@ const rawShouts = shoutMessagesPoller()
 
 ~async function startPolling() {
 
-  const channel = await Rabbit.getChannel()
-  channel.prefetch(5)
+  await Rabbit.connect(process.env.SSS_RABBIT_CS)
+  const channel = await Rabbit.createChannel()
 
   const subscription = rawShouts.subscribe(shoutHtml => {
     channel.publish(

@@ -5,7 +5,7 @@ const log = config.Logger('SHOUTS_PROCESSOR')
 
 export interface ProcessedShout {
   id: number,
-  timestamp: Date,
+  timestamp: number,
   authorId: number,
   authorName: string,
   authorColor: string,
@@ -31,7 +31,7 @@ export function processRawShout(shoutHtml: string): ProcessedShout {
 
   return {
     id: shoutId,
-    timestamp: new Date(unixTimestamp * 1000), // to milliseconds
+    timestamp: unixTimestamp * 1000, // to milliseconds
     authorId: userId,
     authorName: userName,
     authorColor: userColor,
