@@ -1,5 +1,5 @@
 import config from '../../utils/config'
-const log = config.Logger('SHOUTS_REPOSITORY')
+const log = config.Logger('SHOUTS_PERSISTOR')
 
 import { Collection } from 'mongodb'
 import { Mongo } from 'mongodb-pool'

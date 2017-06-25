@@ -34,9 +34,9 @@ const RABBIT_CONFIG = {
     INBOUND_QUEUE: 'shouts.processor',
     OUTBOUND_EXCHANGE: 'processed.shouts'
   },
-  REPOSITORY: {
+  PERSISTOR: {
     INBOUND_EXCHANGE: 'processed.shouts',
-    INBOUND_QUEUE: 'shouts.repository'
+    INBOUND_QUEUE: 'shouts.persistor'
   },
   API: {
     INBOUND_EXCHANGE: 'processed.shouts',

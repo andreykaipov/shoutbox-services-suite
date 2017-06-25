@@ -25,6 +25,7 @@ const rabbit = config.RABBIT
 
 async function setupRabbitTopology() {
 
+  await Rabbit.connect(process.env.SSS_RABBIT_CS)
   const channel = await Rabbit.createChannel()
 
   await channel.assertExchange(rabbit.POLLER.OUTBOUND_EXCHANGE, 'fanout', { durable: true })
@@ -32,8 +33,8 @@ async function setupRabbitTopology() {
   await channel.bindQueue(rabbit.PROCESSOR.INBOUND_QUEUE, rabbit.POLLER.OUTBOUND_EXCHANGE, '')
 
   await channel.assertExchange(rabbit.PROCESSOR.OUTBOUND_EXCHANGE, 'fanout', { durable: true })
-  await channel.assertQueue(rabbit.REPOSITORY.INBOUND_QUEUE, { durable: true })
-  await channel.bindQueue(rabbit.REPOSITORY.INBOUND_QUEUE, rabbit.PROCESSOR.OUTBOUND_EXCHANGE, '')
+  await channel.assertQueue(rabbit.PERSISTOR.INBOUND_QUEUE, { durable: true })
+  await channel.bindQueue(rabbit.PERSISTOR.INBOUND_QUEUE, rabbit.PROCESSOR.OUTBOUND_EXCHANGE, '')
   await channel.assertQueue(rabbit.API.INBOUND_QUEUE, { durable: true })
   await channel.bindQueue(rabbit.API.INBOUND_QUEUE, rabbit.PROCESSOR.OUTBOUND_EXCHANGE, '')
 

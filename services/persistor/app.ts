@@ -1,5 +1,5 @@
 import config from '../../utils/config'
-const log = config.Logger('REPOSITORY_APP')
+const log = config.Logger('PERSISTOR_APP')
 
 import * as amqp from 'amqplib'
 import { Mongo } from 'mongodb-pool'
@@ -17,7 +17,7 @@ log.info('Started persistor service...')
   await Rabbit.connect(process.env.SSS_RABBIT_CS)
   const channel = await Rabbit.createChannel()
 
-  const consumer = channel.consume(config.RABBIT.REPOSITORY.INBOUND_QUEUE, async msg => {
+  const consumer = channel.consume(config.RABBIT.PERSISTOR.INBOUND_QUEUE, async msg => {
 
     const processedShout = JSON.parse(msg.content.toString()) as ProcessedShout
     await persistor.saveShout(processedShout)
