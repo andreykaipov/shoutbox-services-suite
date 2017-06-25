@@ -31,7 +31,7 @@ const RABBIT_CONFIG = {
   },
   PROCESSOR: {
     INBOUND_EXCHANGE: 'raw.shouts',
-    INBOUND_QUEUE: 'shout.processor',
+    INBOUND_QUEUE: 'shouts.processor',
     OUTBOUND_EXCHANGE: 'processed.shouts'
   },
   REPOSITORY: {

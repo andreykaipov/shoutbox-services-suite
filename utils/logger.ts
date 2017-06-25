@@ -1,8 +1,8 @@
-import * as winston from 'winston'
 import * as fs from 'fs'
+import * as winston from 'winston'
 
 if (!fs.existsSync('./logs')) {
-  fs.mkdirSync('./logs');
+  fs.mkdirSync('./logs')
 }
 
 export default function Logger(prefix: string, logFile: boolean | string = true) {
@@ -15,7 +15,8 @@ export default function Logger(prefix: string, logFile: boolean | string = true)
   const transports: any = [
     new winston.transports.Console({
       timestamp: () => new Date().toISOString(),
-      formatter: logFormat
+      formatter: logFormat,
+      level: 'verbose'
     })
   ]
 
