@@ -5,18 +5,22 @@ import * as express from 'express'
 import { Collection, Db } from 'mongodb'
 import { Mongo } from 'mongodb-pool'
 import { ShoutsChannel } from './sse'
+import { versionDelegate, VersionedRequest } from './version-delegate'
 
 export class ShoutsController {
 
   constructor(
     private router = express.Router(),
-    private shouts = Mongo.getCollection('shouts')
+    private shouts_v1 = Mongo.getCollection('shouts'),
+    private shouts_v2 = Mongo.getCollection('shouts_v2')
   ) { }
 
   routes() {
-    this.router.get('/api/shouts', (req, res) => this.getShouts(req, res))
-    this.router.get('/api/shouts/stream', (req, res) => this.streamEvents(req, res))
-    this.router.get('/api/shouts/:id', (req, res) => this.getOneShout(req, res))
+    ['/v1', '/v2', ''].forEach(vn => {
+      this.router.get(`/api${vn}/shouts`, versionDelegate, (req, res) => this.getShouts(req, res))
+      this.router.get(`/api${vn}/shouts/stream`, versionDelegate, (req, res) => this.streamEvents(req, res))
+      this.router.get(`/api${vn}/shouts/:id`, versionDelegate, (req, res) => this.getOneShout(req, res))
+    })
     return this.router
   }
 
@@ -56,13 +60,15 @@ export class ShoutsController {
     const meta = { author_id, author_name, author_color, content, since, until, sort, limit, offset }
 
     try {
-      const items = await this.shouts.aggregate([
+      const shouts = (req as VersionedRequest).version === 'v1' ? this.shouts_v1
+                                                                : this.shouts_v2
+      const items = await shouts.aggregate([
         { $match: matchQuery },
         { $sort: sortQuery },
         { $skip: offset },
         { $limit: limit }
       ]).toArray()
-      const size = await this.shouts.count(matchQuery)
+      const size = await shouts.count(matchQuery)
       const response: any = { _meta: meta }
       response.size = size
       response.items = items
@@ -80,7 +86,9 @@ export class ShoutsController {
 
     const id = Number(req.params.id)
     try {
-      const item = await this.shouts.findOne({ _id: id })
+      const shouts = (req as VersionedRequest).version === 'v1' ? this.shouts_v1
+                                                                : this.shouts_v2
+      const item = await shouts.findOne({ _id: id })
       res.status(200).json(item)
     } catch (e) {
       res.status(500).json(e.errmsg)

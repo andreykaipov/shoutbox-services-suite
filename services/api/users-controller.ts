@@ -4,17 +4,21 @@ const log = config.Logger('USERS_CONTROLLER')
 import * as express from 'express'
 import { Collection, Db } from 'mongodb'
 import { Mongo } from 'mongodb-pool'
+import { versionDelegate, VersionedRequest } from './version-delegate'
 
 export class UsersController {
 
   constructor(
     private router = express.Router(),
-    private users = Mongo.getCollection('users')
+    private users_v1 = Mongo.getCollection('users'),
+    private users_v2 = Mongo.getCollection('users_v2')
   ) { }
 
   routes() {
-    this.router.get('/api/users', (req, res) => this.getUsers(req, res))
-    this.router.get('/api/users/:id', (req, res) => this.getOneUser(req, res))
+    ['/v1', '/v2', ''].forEach(vn => {
+      this.router.get(`/api${vn}/users`, versionDelegate, (req, res) => this.getUsers(req, res))
+      this.router.get(`/api${vn}/users/:id`, versionDelegate, (req, res) => this.getOneUser(req, res))
+    })
     return this.router
   }
 
@@ -36,12 +40,14 @@ export class UsersController {
     const meta = { sort, limit, offset }
 
     try {
-      const items = await this.users.aggregate([
+      const users = (req as VersionedRequest).version === 'v1' ? this.users_v1
+                                                               : this.users_v2
+      const items = await users.aggregate([
         { $sort: sortQuery },
         { $skip: offset },
         { $limit: limit }
       ]).toArray()
-      const size = await this.users.count({})
+      const size = await users.count({})
       const response: any = { _meta: meta }
       response.size = size
       response.items = items
@@ -59,7 +65,9 @@ export class UsersController {
 
     const id = Number(req.params.id)
     try {
-      const item = await this.users.findOne({ _id: id })
+      const users = (req as VersionedRequest).version === 'v1' ? this.users_v1
+                                                               : this.users_v2
+      const item = await users.findOne({ _id: id })
       res.status(200).json(item)
     } catch (e) {
       res.status(500).json(e.errmsg)
