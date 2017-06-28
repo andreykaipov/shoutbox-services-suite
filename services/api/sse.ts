@@ -6,7 +6,10 @@ import { Rabbit } from '../../utils/rabbit'
 
 export const ShoutsChannel = new SseChannel({
   historySize: 0,
-  pingInternal: 60 * 1000
+  pingInternal: 60 * 1000,
+  cors: {
+    origins: ['*']
+  }
 })
 
 export async function streamEvents() {
