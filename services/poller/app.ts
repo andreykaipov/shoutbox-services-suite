@@ -9,7 +9,7 @@ log.info('Started poller service...')
 
 const rawShouts = shoutMessagesPoller()
 
-~async function startPolling() {
+async function startPolling() {
 
   await Rabbit.connect(process.env.SSS_RABBIT_CS)
   const channel = await Rabbit.createChannel()
@@ -26,4 +26,11 @@ const rawShouts = shoutMessagesPoller()
     await Rabbit.close()
   }
 
+}
+
+~async function start() {
+  startPolling().catch(e => {
+    log.error(`Caught unexpected error in POLLER service. Restarting...`, e)
+    setTimeout(start, 1000)
+  })
 }()

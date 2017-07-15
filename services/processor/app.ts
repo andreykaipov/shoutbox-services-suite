@@ -7,7 +7,7 @@ import { processRawShout } from './processor'
 
 log.info('Started processor service...')
 
-~async function startProcessing() {
+async function startProcessing() {
 
   await Rabbit.connect(process.env.SSS_RABBIT_CS)
   const channel = await Rabbit.createChannel()
@@ -28,4 +28,11 @@ log.info('Started processor service...')
 
   consumer.catch(async () => await Rabbit.close())
 
+}
+
+~async function start() {
+  startProcessing().catch(e => {
+    log.error(`Caught unexpected error in PROCESSOR service. Restarting...`, e)
+    setTimeout(start, 1000)
+  })
 }()

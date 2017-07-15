@@ -1,8 +1,8 @@
-import config from '../../utils/config'
+import config from '../../../utils/config'
 const log = config.Logger('API_SSE')
 
 import SseChannel = require('sse-channel')
-import { Rabbit } from '../../utils/rabbit'
+import { Rabbit } from '../../../utils/rabbit'
 
 export const ShoutsChannel = new SseChannel({
   historySize: 0,

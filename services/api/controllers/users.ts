@@ -1,10 +1,10 @@
-import config from '../../utils/config'
+import config from '../../../utils/config'
 const log = config.Logger('USERS_CONTROLLER')
 
 import * as express from 'express'
 import { Collection, Db } from 'mongodb'
 import { Mongo } from 'mongodb-pool'
-import { versionDelegate, VersionedRequest } from './version-delegate'
+import { versionDelegate, VersionedRequest } from '../middleware/version-delegate'
 
 export class UsersController {
 

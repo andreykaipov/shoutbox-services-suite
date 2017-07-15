@@ -1,10 +1,7 @@
-import config from '../../utils/config'
+import config from '../../../utils/config'
 const log = config.Logger('API_VERSION_DELEGATE')
 
 import * as express from 'express'
-import { Collection, Db } from 'mongodb'
-import { Mongo } from 'mongodb-pool'
-import { ShoutsChannel } from './sse'
 
 export interface VersionedRequest extends express.Request {
   version: string

@@ -9,7 +9,7 @@ import { Persistor } from './persistor'
 
 log.info('Started persistor service...')
 
-~async function startPersisting() {
+async function startPersisting() {
 
   await Mongo.connect(process.env.SSS_MONGO_CS, { poolSize: 2 })
   const persistor = new Persistor()
@@ -27,4 +27,11 @@ log.info('Started persistor service...')
 
   consumer.catch(async () => await Rabbit.close())
 
+}
+
+~async function start() {
+  startPersisting().catch(e => {
+    log.error(`Caught unexpected error in PERSISTOR service. Restarting...`, e)
+    setTimeout(start, 1000)
+  })
 }()

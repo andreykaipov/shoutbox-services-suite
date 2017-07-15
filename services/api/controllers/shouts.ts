@@ -1,11 +1,11 @@
-import config from '../../utils/config'
+import config from '../../../utils/config'
 const log = config.Logger('SHOUTS_CONTROLLER')
 
 import * as express from 'express'
 import { Collection, Db } from 'mongodb'
 import { Mongo } from 'mongodb-pool'
-import { ShoutsChannel } from './sse'
-import { versionDelegate, VersionedRequest } from './version-delegate'
+import { versionDelegate, VersionedRequest } from '../middleware/version-delegate'
+import { ShoutsChannel } from '../utils/sse'
 
 export class ShoutsController {
 
