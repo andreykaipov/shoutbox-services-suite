@@ -40,18 +40,16 @@ function getRecentShoutItems(): Observable<any[]> {
       } else {
         try {
           const items: any[] = JSON.parse(response.body).items
+          log.verbose(`Got items from response. Observing them now...`)
           observer.next(items)
           observer.complete()
         } catch (e) {
+          log.verbose(`Getting items from response failed!`, e)
+          log.verbose(`Response was...`, response)
           observer.error(e)
+          throw e
         }
       }
-    })
-  })
-  .retryWhen(errors => {
-    return errors.delayWhen(e => {
-      log.error('Error while getting our recent shouts items!', e)
-      return Observable.timer(2 * config.POLLER.TIMEOUT).first()
     })
   })
   .retry(5)
@@ -76,7 +74,7 @@ function pollShoutMessages(): Observable<string> {
 
 /* Checks if a shout is new or not. It's a simple look-up with side-effects. */
 function isNewShout(shoutHtml: string) {
-  const shoutId = Number( shoutHtml.match(/id="shout_([^"]+)"/).pop() )
+  const shoutId = Number( shoutHtml.match(/id="(hidden_)?shout_([^"]+)"/).pop() )
   if (lastHundoShouts.has(shoutId)) {
     return false
   } else {

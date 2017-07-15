@@ -95,9 +95,9 @@ function processNode(node: CheerioElement) {
         case 'span':
           return processed || attribs.title || ':unrecognized:'
         case 'p':
-          return processed
+          return `<p>${processed}</p>`
         case 'marquee':
-          return processed
+          return `<marquee>${processed}</marquee>`
         default:
           log.warn('Encountered an unrecognizable tag while parsing shout HTML', node)
           return '[unrecognizable-node-tag]'
