@@ -16,9 +16,10 @@ export class ShoutsController {
   ) { }
 
   routes() {
-    ['/v1', '/v2', ''].forEach(vn => {
+    // stream route has to be before the /api/shouts/:id route + has no versioning
+    this.router.get(`/api/shouts/stream`, versionDelegate, (req, res) => this.getShoutEventStream(req, res))
+    ; ['/v1', '/v2', ''].forEach(vn => {
       this.router.get(`/api${vn}/shouts`, versionDelegate, (req, res) => this.getShouts(req, res))
-      this.router.get(`/api${vn}/shouts/stream`, versionDelegate, (req, res) => this.streamEvents(req, res))
       this.router.get(`/api${vn}/shouts/:id`, versionDelegate, (req, res) => this.getOneShout(req, res))
     })
     return this.router
@@ -96,7 +97,7 @@ export class ShoutsController {
 
   }
 
-  async streamEvents(req: express.Request, res: express.Response) {
+  async getShoutEventStream(req: express.Request, res: express.Response) {
 
     log.verbose('GET', req.url)
     ShoutsChannel.addClient(req, res)

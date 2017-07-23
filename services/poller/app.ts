@@ -29,6 +29,7 @@ async function startPolling() {
 }
 
 ~async function start() {
+  log.info('Starting POLLER service...')
   startPolling().catch(e => {
     log.error(`Caught unexpected error in POLLER service. Restarting...`, e)
     setTimeout(start, 1000)

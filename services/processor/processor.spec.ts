@@ -63,6 +63,9 @@ const rawShoutHtmls = {
   staffHelloThisIsDog: rawShoutHtmlTemplate(`
     <p class="center"><img src="images/chat/smiles/staff/thisisdog.png" width="503" height="617" class="resizeme" /></p>
   `),
+  staffRoflcopter: rawShoutHtmlTemplate(`
+    <marquee direction="right" scrolldelay="120" scrollamount="30"><img src="images/chat/smiles/staff/roflcopter.gif" width="235" height="150" class="resizeme"></marquee>
+  `),
   nonGoldUser: `
     <div id="shout_13371337" data-shout-time="1497556800" class="messagewrapper shout row1 numshouts">
     <span class="shout-stamp mr light">
@@ -196,6 +199,12 @@ describe('shout-processor', () => {
 
     it('should process a shout when staff uses \'hello this is dog\'', () => {
       const processed = processRawShout(rawShoutHtmls.staffHelloThisIsDog)
+      checkShoutPreContent(processed)
+      expect(processed.content).to.equal(`images/chat/smiles/staff/thisisdog.png`)
+    })
+
+    it('should process a shout when staff uses the roflcopter', () => {
+      const processed = processRawShout(rawShoutHtmls.staffRoflcopter)
       checkShoutPreContent(processed)
       expect(processed.content).to.equal(`images/chat/smiles/staff/thisisdog.png`)
     })

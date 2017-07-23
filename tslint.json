@@ -19,6 +19,7 @@
     "member-ordering": [ false ],
     "no-console": [ true ],
     "no-namespace": false,
-    "variable-name": [ false ]
+    "variable-name": [ false ],
+    "align": [ false ]
   }
 }

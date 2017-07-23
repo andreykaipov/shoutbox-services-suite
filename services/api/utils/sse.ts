@@ -12,7 +12,7 @@ export const ShoutsChannel = new SseChannel({
   }
 })
 
-export async function streamEvents() {
+export async function streamShoutEvents() {
 
   const channel = await Rabbit.createChannel()
 
