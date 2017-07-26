@@ -17,7 +17,7 @@ export function processRawShout(shoutHtml: string): ProcessedShout {
   const root = $(shoutHtml.trim())
 
   const shoutId = Number(root.attr('id').split('shout_').pop())
-  const unixTimestamp = Number(root.attr('data-shout-time'))
+  const unixTimestamp = Number(root.attr('data-shout-time')) || Math.floor(Date.now() / 1000)
 
   const userLink = root.children('.user-avatar')
   const userId = Number(userLink.attr('data-uid')) || null
@@ -47,10 +47,11 @@ function findContentStartIndex(htmlNodes): number {
 }
 
 function getShoutContent(htmlNodes: CheerioElement[]) {
-
+  
   const contentStartIndex = findContentStartIndex(htmlNodes)
   const contentNodes = htmlNodes.slice(contentStartIndex)
-  contentNodes[0].nodeValue = contentNodes[0].nodeValue.slice(2) // slice off the ': '
+  const initValue = contentNodes[0].nodeValue
+  contentNodes[0].nodeValue = initValue ? initValue.slice(2) : '' // slice off the ': '
   return contentNodes.map(processNode).join('').trim()
 
 }

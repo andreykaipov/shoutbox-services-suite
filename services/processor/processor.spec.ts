@@ -77,7 +77,7 @@ const rawShoutHtmls = {
       qu1cksc0p3r
     </a>: Hello world</div>
   `,
-  repFairy: `
+  repFairyClean: `
     <div id="hidden_shout_1785965">
       <span id="repfairy-js">
         <script>
@@ -99,6 +99,9 @@ const rawShoutHtmls = {
         </script>
       </span>
     </div>
+  `,
+  repFairyDirty: `
+    <div id="hidden_shout_2104337"><span id="repfairy-js"><script>$(function(){$.getScript(static_server + 'scripts/extras/particle.js');});var rdp = $('#repfairy-js').parent().attr('id').replace('hidden_shout_', ''); setTimeout(function(){play_sound('fairydust');}, 500); setTimeout(function(){ajax_request({params: 'name='+shout_mod+'&file=ajax_shout&op=delete&id='+parseInt(rdp),onComplete: function() { $('#hidden_shout_'+rdp).remove(); }});}, 5000);</script></span></div>
   `
 }
 
@@ -176,7 +179,7 @@ describe('shout-processor', () => {
     it('should process a shout when staff uses :kta:', () => {
       const processed = processRawShout(rawShoutHtmls.staffKta)
       checkShoutPreContent(processed)
-      expect(processed.content).to.equal(`:kta: <js>play_sound('kta');</js>`)
+      expect(processed.content).to.equal(`<p>:kta:</p> <js>play_sound('kta');</js>`)
     })
 
     it('should process a shout when staff uses :zombie:', () => {
@@ -200,13 +203,13 @@ describe('shout-processor', () => {
     it('should process a shout when staff uses \'hello this is dog\'', () => {
       const processed = processRawShout(rawShoutHtmls.staffHelloThisIsDog)
       checkShoutPreContent(processed)
-      expect(processed.content).to.equal(`images/chat/smiles/staff/thisisdog.png`)
+      expect(processed.content).to.equal(`<p>images/chat/smiles/staff/thisisdog.png</p>`)
     })
 
     it('should process a shout when staff uses the roflcopter', () => {
       const processed = processRawShout(rawShoutHtmls.staffRoflcopter)
       checkShoutPreContent(processed)
-      expect(processed.content).to.equal(`images/chat/smiles/staff/thisisdog.png`)
+      expect(processed.content).to.equal(`<marquee>images/chat/smiles/staff/roflcopter.gif</marquee>`)
     })
 
     it('should process a shout when a user is not gold', () => {
@@ -218,12 +221,23 @@ describe('shout-processor', () => {
       expect(processed.content).to.equal(`Hello world`)
     })
 
-    it('should process the hidden rep fairy shout', () => {
-      const processed = processRawShout(rawShoutHtmls.repFairy)
+    it('should process the hidden (clean) rep fairy shout', () => {
+      const processed = processRawShout(rawShoutHtmls.repFairyClean)
       expect(processed.id).to.equal(1785965)
       expect(processed.authorId).to.equal(null)
       expect(processed.authorName).to.equal(null)
       expect(processed.authorColor).to.equal(null)
+      expect(processed.timestamp).to.be.a('number').greaterThan(0)
+      expect(processed.content).match(/<js>(.|\n)+play_sound\('fairydust'\);(.|\n)+<\/js>/)
+    })
+
+    it('should process the hidden (dirty) rep fairy shout again', () => {
+      const processed = processRawShout(rawShoutHtmls.repFairyDirty)
+      expect(processed.id).to.equal(2104337)
+      expect(processed.authorId).to.equal(null)
+      expect(processed.authorName).to.equal(null)
+      expect(processed.authorColor).to.equal(null)
+      expect(processed.timestamp).to.be.a('number').greaterThan(0)
       expect(processed.content).match(/<js>(.|\n)+play_sound\('fairydust'\);(.|\n)+<\/js>/)
     })
 
