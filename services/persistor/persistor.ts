@@ -14,6 +14,17 @@ export interface MongoShout {
   content: string
 }
 
+export function processedToMongoShout(shout: ProcessedShout) {
+  return {
+    _id: shout.id,
+    timestamp: new Date(shout.timestamp),
+    author_id: shout.authorId,
+    author_name: shout.authorName,
+    author_color: shout.authorColor,
+    content: shout.content
+  }
+}
+
 export class Persistor {
 
   constructor(
@@ -23,14 +34,7 @@ export class Persistor {
 
   async saveShout(shout: ProcessedShout) {
 
-    await this.shouts.insertOne({
-      _id: shout.id,
-      timestamp: new Date(shout.timestamp),
-      author_id: shout.authorId,
-      author_name: shout.authorName,
-      author_color: shout.authorColor,
-      content: shout.content
-    }).then(res => {
+    await this.shouts.insertOne(processedToMongoShout(shout)).then(res => {
       log.verbose('Persisted shout', shout.id)
     }).catch(err => {
       log.warn('Error while persisting shout', err.message)

@@ -38,9 +38,9 @@ export class ShoutsController {
 
     const matchQuery: any = {}
     if (author_id) { matchQuery.author_id = author_id }
-    if (author_name) { matchQuery.author_name = author_name }
-    if (author_color) { matchQuery.author_color = author_color }
-    if (content) { matchQuery.content = new RegExp(content) }
+    if (author_name) { matchQuery.author_name = new RegExp(`^${author_name}$`, 'i') }
+    if (author_color) { matchQuery.author_color = new RegExp(`^${author_color}$`, 'i') }
+    if (content) { matchQuery.content = new RegExp(content, 'i') }
     if (since || until) {
       matchQuery.timestamp = {}
       if (since) { matchQuery.timestamp.$gte = new Date(since) }
