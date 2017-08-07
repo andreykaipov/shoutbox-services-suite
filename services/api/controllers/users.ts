@@ -10,12 +10,24 @@ export class UsersController {
 
   constructor(
     private router = express.Router(),
-    private users_v1 = Mongo.getCollection('users'),
-    private users_v2 = Mongo.getCollection('users_v2')
+    private users_v1 = Mongo.getCollection(`${config.PERSITOR.USERS_COLLECTION}_v1`),
+    private users_v2 = Mongo.getCollection(`${config.PERSITOR.USERS_COLLECTION}_v2`),
+    private users_v3 = Mongo.getCollection(`${config.PERSITOR.USERS_COLLECTION}_v3`)
   ) { }
 
+  private getUsersCollection(version: string) {
+    switch (version) {
+      case 'v1':
+        return this.users_v1
+      case 'v2':
+        return this.users_v2
+      default:
+        return this.users_v3
+    }
+  }
+
   routes() {
-    ['/v1', '/v2', ''].forEach(vn => {
+    ['/v1', '/v2', '/v3', ''].forEach(vn => {
       this.router.get(`/api${vn}/users`, versionDelegate, (req, res) => this.getUsers(req, res))
       this.router.get(`/api${vn}/users/:id`, versionDelegate, (req, res) => this.getOneUser(req, res))
     })
@@ -40,8 +52,7 @@ export class UsersController {
     const meta = { sort, limit, offset }
 
     try {
-      const users = (req as VersionedRequest).version === 'v1' ? this.users_v1
-                                                               : this.users_v2
+      const users = this.getUsersCollection((req as VersionedRequest).version)
       const items = await users.aggregate([
         { $sort: sortQuery },
         { $skip: offset },
@@ -65,8 +76,7 @@ export class UsersController {
 
     const id = Number(req.params.id)
     try {
-      const users = (req as VersionedRequest).version === 'v1' ? this.users_v1
-                                                               : this.users_v2
+      const users = this.getUsersCollection((req as VersionedRequest).version)
       const item = await users.findOne({ _id: id })
       res.status(200).json(item)
     } catch (e) {

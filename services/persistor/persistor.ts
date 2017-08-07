@@ -28,8 +28,8 @@ export function processedToMongoShout(shout: ProcessedShout) {
 export class Persistor {
 
   constructor(
-    private shouts = Mongo.getCollection(config.PERSITOR.SHOUTS_COLLECTION),
-    private users = Mongo.getCollection(config.PERSITOR.USERS_COLLECTION)
+    private shouts = Mongo.getCollection(`${config.PERSITOR.SHOUTS_COLLECTION}_v3`),
+    private users = Mongo.getCollection(`${config.PERSITOR.USERS_COLLECTION}_v3`)
   ) { }
 
   async saveShout(shout: ProcessedShout) {

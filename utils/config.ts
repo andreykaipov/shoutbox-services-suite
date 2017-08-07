@@ -50,8 +50,8 @@ const RABBIT_CONFIG = {
 }
 
 const PERSISTOR_CONFIG = {
-  SHOUTS_COLLECTION: 'shouts_v2',
-  USERS_COLLECTION: 'users_v2'
+  SHOUTS_COLLECTION: 'shouts',
+  USERS_COLLECTION: 'users'
 }
 
 /* Our files should instantiate a logger via this export,

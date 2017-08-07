@@ -11,14 +11,26 @@ export class ShoutsController {
 
   constructor(
     private router = express.Router(),
-    private shouts_v1 = Mongo.getCollection('shouts'),
-    private shouts_v2 = Mongo.getCollection('shouts_v2')
+    private shouts_v1 = Mongo.getCollection(`${config.PERSITOR.SHOUTS_COLLECTION}_v1`),
+    private shouts_v2 = Mongo.getCollection(`${config.PERSITOR.SHOUTS_COLLECTION}_v2`),
+    private shouts_v3 = Mongo.getCollection(`${config.PERSITOR.SHOUTS_COLLECTION}_v3`)
   ) { }
+
+  private getShoutsCollection(version: string) {
+    switch (version) {
+      case 'v1':
+        return this.shouts_v1
+      case 'v2':
+        return this.shouts_v2
+      default:
+        return this.shouts_v3
+    }
+  }
 
   routes() {
     // stream route has to be before the /api/shouts/:id route + has no versioning
     this.router.get(`/api/shouts/stream`, versionDelegate, (req, res) => this.getShoutEventStream(req, res))
-    ; ['/v1', '/v2', ''].forEach(vn => {
+    ; ['/v1', '/v2', '/v3', ''].forEach(vn => {
       this.router.get(`/api${vn}/shouts`, versionDelegate, (req, res) => this.getShouts(req, res))
       this.router.get(`/api${vn}/shouts/:id`, versionDelegate, (req, res) => this.getOneShout(req, res))
     })
@@ -61,8 +73,7 @@ export class ShoutsController {
     const meta = { author_id, author_name, author_color, content, since, until, sort, limit, offset }
 
     try {
-      const shouts = (req as VersionedRequest).version === 'v1' ? this.shouts_v1
-                                                                : this.shouts_v2
+      const shouts = this.getShoutsCollection((req as VersionedRequest).version)
       const items = await shouts.aggregate([
         { $match: matchQuery },
         { $sort: sortQuery },
@@ -87,8 +98,7 @@ export class ShoutsController {
 
     const id = Number(req.params.id)
     try {
-      const shouts = (req as VersionedRequest).version === 'v1' ? this.shouts_v1
-                                                                : this.shouts_v2
+      const shouts = this.getShoutsCollection((req as VersionedRequest).version)
       const item = await shouts.findOne({ _id: id })
       res.status(200).json(item)
     } catch (e) {

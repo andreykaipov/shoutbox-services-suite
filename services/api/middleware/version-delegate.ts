@@ -9,6 +9,6 @@ export interface VersionedRequest extends express.Request {
 
 export function versionDelegate(req: VersionedRequest, res: express.Response, next: express.NextFunction) {
   const matchVersion = req.url.match('/api/v(.)/')
-  req.version = matchVersion ? `v${matchVersion.pop()}` : `v2`
+  req.version = matchVersion ? `v${matchVersion.pop()}` : `v3`
   next()
 }
