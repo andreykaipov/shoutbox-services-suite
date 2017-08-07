@@ -13,16 +13,21 @@ const POLLER_CONFIG = {
     'X-Requested-With': 'XMLHttpRequest',
     'DNT': '1',
     'Connection': 'keep-alive',
-    'Cookie': `user=${process.env.SSS_POLLER_COOKIE_USER};PHPSESSID=${process.env.SSS_POLLER_COOKIE_PHPSESSID};`
+    'Cookie': `
+      user=${process.env.SSS_POLLER_COOKIE_USER};
+      PHPSESSID=${process.env.SSS_POLLER_COOKIE_PHPSESSID};
+      memawaychat=1;
+      memawaytime=${Math.floor(new Date().getTime() / 1000)};
+    `.replace(/\s/g, '')
   },
-  REQUEST_URL: 'https://process.env.SSS_HOST/modules.php',
+  REQUEST_URL: 'https://process.env.SSS_HOST/index.php',
   QUERY_STRING_PARAMS: (options = {}) => ({
     name: 'Members_Shout',
     file: 'ajax_shout',
     op: 'json_load',
     ...options
   }),
-  TIMEOUT: 5000
+  TIMEOUT: process.env.SSS_POLLER_TIMEOUT
 }
 
 const RABBIT_CONFIG = {
